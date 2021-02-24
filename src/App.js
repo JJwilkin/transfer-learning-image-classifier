@@ -33,6 +33,8 @@ function App() {
   useEffect(() => {
     async function app() {
       
+      let startRecording = false;
+      let recordClass = "";
       let classifier = knnClassifier.create();
       console.log('Loading mobilenet..');
     
@@ -83,16 +85,28 @@ function App() {
       document.getElementById('save').addEventListener('click', () => save(classifier, 'myModel'));
       document.getElementById('add').addEventListener('click', () => addClass());
       document.getElementById('count').addEventListener('click', () => console.log(classifier.getClassExampleCount()));
-      
+      document.getElementById("record").addEventListener("click", () => {
+        console.log('recording...')
+        recordClass = document.getElementById('recordInput').value;
+        startRecording = true;
+        setTimeout(() => {
+          startRecording = false;
+          console.log('done')
+        }, 5000);
+      });
+
       while (true) {
         if (classifier.getNumClasses() > 0) {
           const img = await webcam.capture();
-    
+          
           // Get the activation from mobilenet from the webcam.
           const activation = net.infer(img, 'conv_preds');
           // Get the most likely class and confidence from the classifier module.
           const result = await classifier.predictClass(activation);
     
+          if (startRecording) {
+            addExample(recordClass)
+          }
           
           document.getElementById('console').innerText = `
             prediction: ${result.label}\n
@@ -119,6 +133,8 @@ function App() {
       <button id="count">Get Count</button>
       <input id='input'></input>
       <button id="add">Add Class</button>
+      <input id='recordInput' placeholder="Class Name to Record"></input>
+      <button id="record">Start Recording</button>
       <div id='buttons' style={{marginTop:10}}></div>
     </div>
   );

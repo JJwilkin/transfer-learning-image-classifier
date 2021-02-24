@@ -3,7 +3,6 @@ import './App.css';
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as tf from '@tensorflow/tfjs';
-const fs = require('fs').promises;
 const Tensorset = require('tensorset');
 
 function App() {

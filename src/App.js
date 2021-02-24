@@ -32,10 +32,7 @@ function App() {
   }
 
   useEffect(() => {
-  
-
     async function app() {
-      let classes = [];
       
       let classifier = knnClassifier.create();
       console.log('Loading mobilenet..');
@@ -46,22 +43,18 @@ function App() {
 
       let existingJson = await (await fetch('./model.json')).json()
       
-
-
       const addClass = async (label) => {
         let className = label || document.getElementById('input').value;
         let btn = document.createElement("BUTTON");
         btn.innerHTML = `Add ${className}`;
         btn.onclick = function() { addExample(className); };
         document.getElementById("buttons").appendChild(btn); 
-        
-        
-        // 
       }
+
       if (existingJson) {
         let dataset = await Tensorset.parse(existingJson);
         classifier.setClassifierDataset(dataset);
-        classes = Object.keys(classifier.getClassExampleCount());
+        let classes = Object.keys(classifier.getClassExampleCount());
         await classes.forEach((label) => {
           addClass(label);
         })
@@ -88,12 +81,6 @@ function App() {
         img.dispose();
       };
 
-      
-      
-      // When clicking a button, add an example for that class.
-      // document.getElementById('class-a').addEventListener('click', () => addExample(0));
-      // document.getElementById('class-b').addEventListener('click', () => addExample(1));
-      // document.getElementById('class-c').addEventListener('click', () => addExample(2));
       document.getElementById('save').addEventListener('click', () => save(classifier, 'myModel'));
       document.getElementById('add').addEventListener('click', () => addClass());
       document.getElementById('count').addEventListener('click', () => console.log(classifier.getClassExampleCount()));
@@ -125,19 +112,15 @@ function App() {
   },[])
   return (
     <div className="App">
-       <div id="console"></div>
-      {/* <Video AutoPlay Muted id="webcam" Width="224" Height="224" /> */}
-      <video autoPlay playsInline muted id="webcam" width="224" height="224"></video>
-    {/* <button id="class-a">Add A</button>
-    <button id="class-b">Add B</button>
-    <button id="class-c">Add C</button> */}
-    <button id="save">Save</button>
-    <button id="count">Get Count</button>
-    <input id='input'></input>
-    <button id="add">Add Class</button>
-    <div id='buttons'></div>
-
-    
+      <div style={{marginBottom:10}}>
+        <video autoPlay playsInline muted id="webcam" width="224" height="224"></video>
+        <div id="console"></div>
+      </div>
+      <button id="save">Save</button>
+      <button id="count">Get Count</button>
+      <input id='input'></input>
+      <button id="add">Add Class</button>
+      <div id='buttons' style={{marginTop:10}}></div>
     </div>
   );
 }
